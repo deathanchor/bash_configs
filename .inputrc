@@ -1,0 +1,6 @@
+# tab complete with case insensitive on
+set completion-ignore-case on
+# when you up arrow it will only search commands which start with what you have typed so far
+"\e[A": history-search-backward
+# when you down arrow it will only search commands which start with what you have typed so far
+"\e[B": history-search-forward
