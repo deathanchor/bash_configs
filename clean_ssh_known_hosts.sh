@@ -51,4 +51,4 @@ for host in `ssh-keygen -l -f $hostFile | cut -d' ' -f3 | cut -d, -f1 | grep -v 
 	fi
 done
 
-
+# Niko The Dread Pirate (@deathanchor)
