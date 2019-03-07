@@ -38,10 +38,13 @@ shift $((OPTIND-1))
 
 for host in `ssh-keygen -l -f $hostFile | cut -d' ' -f3 | cut -d, -f1 | grep -v '^\W'`; do
 	echo Checking $host
+  # check simple ssh connection
 	ssh $host -o 'StrictHostKeyChecking=yes' -o 'PasswordAuthentication=no' \\exit 2>&-
 	if [[ $? != 0 ]]; then
+    # well that didn't work, now check if can connect but just get denied access (key problems or connection problems)
 		ssh $host -o 'StrictHostKeyChecking=yes' -o 'PasswordAuthentication=no' -o 'ConnectTimeout=5' \\exit 2>&1 | grep -e 'Permission denied' -e 'timed out' 1>&-
 		if [[ $? == 0 ]]; then
+      # skip if connection problems and did not use -d option
       if [[ $removeConnect == 1 ]]; then
         echo $host : Could not connect with ssh key 
       else
@@ -49,12 +52,14 @@ for host in `ssh-keygen -l -f $hostFile | cut -d' ' -f3 | cut -d, -f1 | grep -v 
         continue
       fi
 		fi
+    # remove hostkey if -r option was used
 		if [[ $removeBad == 1 ]]; then
 			ssh-keygen -R $host -f $hostFile 1>&-
 			echo $host : removed host key from $hostFile
 		else
 			echo $host : host key mismatch found in $hostFile
 		fi
+  # bark with -v
 	elif [[ $verbose == 1 ]]; then
 		echo $host : host key matches OK
 	fi
