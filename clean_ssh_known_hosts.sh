@@ -28,7 +28,7 @@ while getopts 'f:rdvh' opt; do
 			verbose=1
 			;;
 		h)
-			echo $usage
+			echo "$usage"
 			exit
 			;;
 	esac
